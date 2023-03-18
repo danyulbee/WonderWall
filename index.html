@@ -23,6 +23,13 @@
 			margin-top: 50px;
 			display: none;
 		}
+		#video {
+			display: block;
+			margin: 0 auto;
+			margin-top: 50px;
+			max-width: 80%;
+			height: auto;
+		}
 	</style>
 </head>
 <body>
@@ -75,14 +82,4 @@
 	</div>
 	<input type="text" id="input" placeholder="Start typing here...">
 	<div id="result"></div>
-
-	<script>
-		const lyrics = document.getElementById('lyrics').innerText;
-		const input = document.getElementById('input');
-		const result = document.getElementById('result');
-		let currentChar = 0;
-
-		input.addEventListener('keydown', function(e) {
-			if (e.key === lyrics[currentChar]) {
-				currentChar++;
-				
+	<iframe id="video" width="560" height="315" src="https://www.youtube.com/embed/6hzrDeceEKc?autoplay=1&loop=1&mute=1" frameborder
