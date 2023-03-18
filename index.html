@@ -32,33 +32,72 @@
 			height: auto;
 		}
 	</style>
+	<script>
+		window.onload = function() {
+			var video = document.getElementById("video");
+			var lyrics = document.getElementById("lyrics");
+			var input = document.getElementById("input");
+			var result = document.getElementById("result");
+
+			var timestamps = [];
+			var currentLyric = 0;
+			var startTime = 0;
+			var endTime = 0;
+			var typedText = "";
+
+			// Get timestamps from lyrics
+			var lines = lyrics.getElementsByTagName("div");
+			for (var i = 0; i < lines.length; i++) {
+				var timestamp = lines[i].getAttribute("data-timestamp");
+				if (timestamp) {
+					timestamps.push(parseFloat(timestamp));
+				}
+			}
+
+			// Play video and show lyrics at appropriate time
+			video.addEventListener("timeupdate", function() {
+				if (video.currentTime >= timestamps[currentLyric]) {
+					lyrics.style.display = "block";
+					if (currentLyric < lines.length) {
+						lines[currentLyric].style.display = "inline";
+						startTime = video.currentTime;
+						endTime = timestamps[currentLyric + 1] || video.duration;
+					}
+					currentLyric++;
+				}
+				if (video.currentTime > endTime + 1.5) {
+					lyrics.style.display = "none";
+				}
+			});
+
+			// Check input against current lyric
+			input.addEventListener("input", function() {
+				typedText = input.value;
+				var expectedText = lines[currentLyric - 1].textContent.trim();
+				if (typedText === expectedText) {
+					input.style.borderColor = "#2ecc71";
+					result.innerHTML = "Correct!";
+				} else {
+					input.style.borderColor = "#e74c3c";
+					result.innerHTML = "Incorrect. Keep trying!";
+				}
+			});
+
+			// Reset input and result on video replay
+			video.addEventListener("ended", function() {
+				input.value = "";
+				input.style.borderColor = "#ccc";
+				result.innerHTML = "";
+				currentLyric = 0;
+				startTime = 0;
+				endTime = 0;
+				typedText = "";
+			});
+		};
+	</script>
 </head>
 <body>
 	<iframe id="video" width="560" height="315" src="https://www.youtube.com/embed/6hzrDeceEKc?autoplay=1&loop=1&mute=1" frameborder="0" allowfullscreen></iframe>
 	<div id="lyrics">
 		<div data-timestamp="0.1">Today is gonna be the day</div>
-		<div data-timestamp="3.5">That they're gonna throw it back to you</div>
-		<div data-timestamp="7.0">By now you should've somehow</div>
-		<div data-timestamp="11.3">Realized what you gotta do</div>
-		<div data-timestamp="15.5">I don't believe that anybody</div>
-		<div data-timestamp="20.0">Feels the way I do about you now</div>
-		<br>
-		<div data-timestamp="23.2">Backbeat, the word was on the street</div>
-		<div data-timestamp="26.9">That the fire in your heart is out</div>
-		<div data-timestamp="31.2">I'm sure you've heard it all before</div>
-		<div data-timestamp="35.2">But you never really had a doubt</div>
-		<div data-timestamp="39.2">I don't believe that anybody</div>
-		<div data-timestamp="43.9">Feels the way I do about you now</div>
-		<br>
-		<div data-timestamp="47.0">And all the roads we have to walk are winding</div>
-		<div data-timestamp="52.3">And all the lights that lead us there are blinding</div>
-		<div data-timestamp="57.1">There are many things that I would like to say to you</div>
-		<div data-timestamp="62.4">But I don't know how</div>
-		<br>
-		<div data-timestamp="65.7">Because maybe</div>
-		<div data-timestamp="68.7">You're gonna be the one that saves me</div>
-		<div data-timestamp="73.0">And after all</div>
-		<div data-timestamp="77.1">You're my wonderwall</div>
-		<br>
-		<div data-timestamp="80.2">Today was gonna be the day</div>
-		<div
+		<div data-timestamp="3.5">
